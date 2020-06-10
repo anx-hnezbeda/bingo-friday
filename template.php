@@ -21,7 +21,7 @@
         <h1>Ergebnisse für <?php echo date('d.m.Y'); ?></h1>
         <ul>
             <?php
-                $fileContents = file('recently-played.txt');
+                $fileContents = file(PLAYLIST_FILE_NAME);
                 foreach($fileContents as $line) {
                     echo "<li>$line</li>";
                 }

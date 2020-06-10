@@ -1,14 +1,13 @@
 <?php
     require_once 'config.php';
     require_once 'utils.php';
+    require_once 'vendor/autoload.php';
 
     function lambda_handler($event, $context) {
-
+        s3_register_sream_wrapper(AWS_S3_REGION, AWS_S3_KEY, AWS_S3_SECRET);
         date_default_timezone_set('Europe/Vienna');
         $today9am = strtotime("today 9am") * 1000;
-
         $apiUrl = "https://api.spotify.com/v1/me/player/recently-played?limit=50&after=$today9am";
-        $playlistFile = './recently-played.txt';
 
         $file = file_get_contents($apiUrl, false, stream_context_create([
             'http' => [
@@ -20,7 +19,7 @@
         if (!empty($file)) {
             $data = json_decode($file);
             if ($data) {
-                $fileContents = file($playlistFile);
+                $fileContents = file(PLAYLIST_FILE_NAME);
 
                 $replaceCharacters = [
                     chr(10) => '',
@@ -41,6 +40,7 @@
                     $artistNames = strtr(implode(' & ', $artistNames), $replaceCharacters);
 
                     $contentString = "$playedAtFormatted | $artistNames: $trackName ($albumName)\n";
+
                     if (!in_array($contentString, $fileContents)) {
                         $fileContents[] = $contentString;
                     }
@@ -49,7 +49,7 @@
                 $fileContents = array_unique($fileContents);
                 rsort($fileContents);
 
-                $filePointer = fopen($playlistFile, 'w');
+                $filePointer = fopen(PLAYLIST_FILE_NAME, 'w');
                 fwrite($filePointer, implode('', $fileContents));
                 fclose($filePointer);
             } else {

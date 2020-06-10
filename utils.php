@@ -1,7 +1,6 @@
 <?php
 
-function render_template($templateName = 'template')
-{
+function render_template($templateName = 'template') {
     ob_start();
     include "./$templateName.php";
     $output = ob_get_contents();
@@ -36,4 +35,16 @@ function refresh_token($clientId, $clientSecret, $oAuthRefreshToken) {
     else {
         throw new Exception('Could not decode JSON data from API');
     }
+}
+
+function s3_register_sream_wrapper($region, $key, $secret) {
+    $s3 = new Aws\S3\S3Client([
+        'region'  => $region,
+        'version' => 'latest',
+        'credentials' => [
+            'key'    => $key,
+            'secret' => $secret,
+        ]
+    ]);
+    $s3->registerStreamWrapper();
 }
