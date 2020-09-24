@@ -4,7 +4,7 @@
     require_once 'vendor/autoload.php';
 
     function lambda_handler($event, $context) {
-        s3_register_sream_wrapper(AWS_S3_REGION, AWS_S3_KEY, AWS_S3_SECRET);
+        s3_register_sream_wrapper(S3_REGION, S3_KEY, S3_SECRET, S3_ENDPOINT);
         date_default_timezone_set('Europe/Vienna');
         $today9am = strtotime("today 9am") * 1000;
         $apiUrl = "https://api.spotify.com/v1/me/player/recently-played?limit=50&after=$today9am";
@@ -56,7 +56,9 @@
                 throw new Exception('Could not decode JSON data from API');
             }
         }
-
+        
+        echo render_template();
+        die();
         return [
             'status' => 200,
             'type' => 'binary',
@@ -66,3 +68,5 @@
             'data' => base64_encode(render_template())
         ];
     }
+
+    lambda_handler(1,2);

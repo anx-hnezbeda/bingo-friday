@@ -37,14 +37,21 @@ function refresh_token($clientId, $clientSecret, $oAuthRefreshToken) {
     }
 }
 
-function s3_register_sream_wrapper($region, $key, $secret) {
-    $s3 = new Aws\S3\S3Client([
+function s3_register_sream_wrapper($region, $key, $secret, $endpoint = null) {
+    $s3Config = [
         'region'  => $region,
         'version' => 'latest',
+        'use_path_style_endpoint' => true,
         'credentials' => [
             'key'    => $key,
             'secret' => $secret,
         ]
-    ]);
+    ];
+
+    if ($endpoint) {
+        s3Config['endpoint'] = $endpoint;
+    }
+
+    $s3 = new Aws\S3\S3Client(s3Config);
     $s3->registerStreamWrapper();
 }
