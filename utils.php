@@ -41,7 +41,7 @@ function s3_register_sream_wrapper($region, $key, $secret, $endpoint = null) {
     $s3Config = [
         'region'  => $region,
         'version' => 'latest',
-        'use_path_style_endpoint' => true,
+        'use_path_style_endpoint' => false,
         'credentials' => [
             'key'    => $key,
             'secret' => $secret,
@@ -49,9 +49,9 @@ function s3_register_sream_wrapper($region, $key, $secret, $endpoint = null) {
     ];
 
     if ($endpoint) {
-        s3Config['endpoint'] = $endpoint;
+        $s3Config['endpoint'] = $endpoint;
     }
 
-    $s3 = new Aws\S3\S3Client(s3Config);
+    $s3 = new Aws\S3\S3Client($s3Config);
     $s3->registerStreamWrapper();
 }

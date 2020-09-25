@@ -56,9 +56,7 @@
                 throw new Exception('Could not decode JSON data from API');
             }
         }
-        
-        echo render_template();
-        die();
+
         return [
             'status' => 200,
             'type' => 'binary',
